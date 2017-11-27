@@ -1,0 +1,44 @@
+import RPi.GPIO as GPIO ## import GPIO library
+import max7219.led as led
+
+from tkinter import *
+
+GPIO.setmode(GPIO.BOARD)   #Ponemos la Raspberry en modo BOARD
+GPIO.setup(21,GPIO.OUT)    #Ponemos el pin 21 como salida
+p = GPIO.PWM(21,50)        #Ponemos el pin 21 en modo PWM y enviamos 50 pulsos por segundo
+p.start(7.5)               #Enviamos un pulso del 7.5% para centrar el servo
+
+opcion= ["OPEN", "CLOSE"]
+
+class App:
+  def __init__(self, master):
+    frame = Frame(master)
+    frame.pack()
+    self.button = Button(frame, text="Quit", fg="red", command=quit)
+    self.button.pack(side=LEFT)
+    self.slogan = Button(frame,text="Open_Door", command=self.abrir)
+    self.slogan.pack(side=LEFT)
+    self.slogan = Button(frame,text="Close_Door", command=self.cerrar)
+    self.slogan.pack(side=LEFT)
+    
+  def abrir(self):
+    for i in range(7,4,-1):
+        a=i+0.5
+        p.ChangeDutyCycle(a)
+        print(a)
+    device = led.matrix()
+    device.show_message(opcion[0])
+    print("Abierto")
+    
+  def cerrar(self):
+    for i in range(5,8,1):
+        a=i+0.5
+        p.ChangeDutyCycle(a)
+        print(a)
+    print("Cerrado")
+    device = led.matrix()
+    device.show_message(opcion[1])
+
+root = Tk()
+app = App(root)
+root.mainloop()
